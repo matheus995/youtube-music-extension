@@ -1,0 +1,205 @@
+<!-- <!DOCTYPE html>
+<html>
+
+<head>
+    <title>YouTube Music Controller</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            width: 300px;
+            /* Largura maior para melhor visualização dos botões */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            /* Altura do popup ajustada para incluir o slider */
+            margin: 0;
+        }
+
+        .button-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .button {
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 24px;
+            /* Tamanho do ícone */
+            cursor: pointer;
+            margin: 5px;
+            width: 60px;
+        }
+
+        .play-pause {
+            width: 80px;
+            /* Largura específica para o botão play/pause */
+        }
+
+        .previous {
+            margin-right: auto;
+            /* Alinha o botão à esquerda */
+        }
+
+        .next {
+            margin-left: auto;
+            /* Alinha o botão à direita */
+        }
+
+        .slider-container {
+            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 80%;
+            height: 8px;
+            background: #ddd;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+            border-radius: 5px;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #4CAF50;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #4CAF50;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        #song-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        width: 100%;
+        }
+
+        #album-art {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none; /* Inicialmente oculto */
+        }
+
+        #song-info {
+            /* margin-bottom: 10px;
+            text-align: center; */
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        #full-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        #song-title, #full-info {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        /* #song-title, #album-name {
+            margin: 5px 0;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 280px;
+        } */
+
+        /* #song-title {
+            font-weight: bold;
+        } */
+    </style>
+</head>
+
+<body>
+    <div id="song-container">
+        <img id="album-art" src="" alt="Album Art">
+        <div id="song-info">
+            <p id="song-title"></p>
+            <p id="full-info"></p>
+        </div>
+    </div>
+    <div class="button-container">
+        <button id="previous" class="button previous"><i class="fas fa-backward"></i></button>
+        <button id="play-pause" class="button play-pause"><i class="fas fa-play"></i>/<i
+                class="fas fa-pause"></i></button>
+        <button id="next" class="button next"><i class="fas fa-forward"></i></button>
+    </div>
+    <div class="slider-container">
+        <input type="range" id="volume-slider" class="slider" min="0" max="100" value="50">
+    </div>
+    <script type="module" src="popup.js"></script>
+</body> -->
+
+</html>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Music Controller</title>
+    <link rel="stylesheet" href="popup.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div id="content-wrapper" class="hidden">
+            <div class="album-art">
+                <img id="album-art" alt="Album Art">
+            </div>
+            <div class="song-info">
+                <h2 id="song-title"></h2>
+                <p id="full-info"></p>
+            </div>
+        </div>
+        <div class="controls">
+            <button id="previous" class="control-button">
+                <span class="material-icons">skip_previous</span>
+            </button>
+            <button id="play-pause" class="control-button">
+                <span class="material-icons">play_arrow</span>
+            </button>
+            <button id="next" class="control-button">
+                <span class="material-icons">skip_next</span>
+            </button>
+        </div>
+        <div class="volume-control">
+            <span class="material-icons">volume_up</span>
+            <input type="range" id="volume-slider" min="0" max="100" value="50">
+        </div>
+    </div>
+    <script type="module" src="popup.js"></script>
+</body>
+</html>

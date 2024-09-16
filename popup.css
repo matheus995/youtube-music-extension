@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 300px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.container {
+    padding: 15px;
+}
+
+#content-wrapper {
+    margin-bottom: 15px;
+}
+
+#content-wrapper.hidden {
+    display: none;
+}
+
+.album-art {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.album-art img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+.song-info {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.song-info h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.song-info p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #b3b3b3;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.control-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin: 0 10px;
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
+
+.control-button:hover {
+    color: #1db954; /* Cor verde do Spotify como exemplo */
+}
+
+.control-button .material-icons {
+    font-size: 36px;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.volume-control .material-icons {
+    margin-right: 10px;
+    color: #ffffff;
+}
+
+#volume-slider {
+    -webkit-appearance: none;
+    width: 150px;
+    height: 5px;
+    border-radius: 5px;
+    background: #4d4d4d;
+    outline: none;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #1db954;
+    cursor: pointer;
+}
+
+#volume-slider::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #1db954;
+    cursor: pointer;
+}
