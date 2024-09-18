@@ -15,25 +15,27 @@
             <div class="album-art">
                 <img id="album-art" alt="Album Art">
             </div>
-            <div class="song-info">
-                <h2 id="song-title"></h2>
-                <p id="full-info"></p>
+            <div class="info-controls">
+                <div class="song-info">
+                    <h2 id="song-title"></h2>
+                    <p id="full-info"></p>
+                </div>
+                <div class="controls">
+                    <button id="previous" class="control-button">
+                        <span class="material-icons">skip_previous</span>
+                    </button>
+                    <button id="play-pause" class="control-button">
+                        <span class="material-icons">play_arrow</span>
+                    </button>
+                    <button id="next" class="control-button">
+                        <span class="material-icons">skip_next</span>
+                    </button>
+                </div>
+                <div class="volume-control">
+                    <span class="material-icons">volume_up</span>
+                    <input type="range" id="volume-slider" min="0" max="100" value="50">
+                </div>
             </div>
-        </div>
-        <div class="controls">
-            <button id="previous" class="control-button">
-                <span class="material-icons">skip_previous</span>
-            </button>
-            <button id="play-pause" class="control-button">
-                <span class="material-icons">play_arrow</span>
-            </button>
-            <button id="next" class="control-button">
-                <span class="material-icons">skip_next</span>
-            </button>
-        </div>
-        <div class="volume-control">
-            <span class="material-icons">volume_up</span>
-            <input type="range" id="volume-slider" min="0" max="100" value="50">
         </div>
     </div>
     <script type="module" src="popup.js"></script>

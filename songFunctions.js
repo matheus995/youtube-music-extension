@@ -57,10 +57,23 @@ function updateUI(songInfo, elements) {
         songName.textContent = songInfo.name || 'Unknown Song Name';
         fullInfo.textContent = songInfo.info || 'Unknown Song Info';
         contentWrapper.classList.remove('hidden');
+
+        // Ajusta o tamanho da fonte para o título e informações da música
+        adjustFontSize(songName, parseFloat(getComputedStyle(songName).maxHeight));
+        adjustFontSize(fullInfo, parseFloat(getComputedStyle(fullInfo).maxHeight));
+
         console.log('UI updated with song info');
     } else {
         contentWrapper.classList.add('hidden');
         console.log('UI hidden due to lack of song info');
+    }
+}
+
+function adjustFontSize(element, maxHeight) {
+    let fontSize = parseInt(window.getComputedStyle(element).fontSize);
+    while (element.scrollHeight > maxHeight && fontSize > 8) {
+        fontSize--;
+        element.style.fontSize = fontSize + 'px';
     }
 }
 
