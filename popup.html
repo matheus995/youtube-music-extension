@@ -33,7 +33,10 @@
                     </button>
                 </div>
                 <div class="volume-control">
-                    <span class="material-icons">volume_up</span>
+                    <button id="volume-button" class="control-button">
+                        <span class="material-icons volume-icon">volume_up</span>
+                        <span class="material-icons mute-icon" style="display: none;">volume_off</span>
+                    </button>
                     <input type="range" id="volume-slider" min="0" max="100" value="50">
                 </div>
             </div>

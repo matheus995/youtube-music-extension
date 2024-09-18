@@ -28,7 +28,8 @@ function executeCommand(command, volume = null) {
     const commandMap = {
         'playPause': '//*[@id="play-pause-button"]',
         'next': '//*[@class="next-button style-scope ytmusic-player-bar"]',
-        'previous': '//*[@class="previous-button style-scope ytmusic-player-bar"]'
+        'previous': '//*[@class="previous-button style-scope ytmusic-player-bar"]',
+        'toggleMute': '//*[@class="volume style-scope ytmusic-player-bar"]'
     };
 
     if (command in commandMap) {

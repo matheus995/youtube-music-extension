@@ -9,6 +9,7 @@ function initializeDOMElements() {
         playPauseButton: document.getElementById('play-pause'),
         previousButton: document.getElementById('previous'),
         nextButton: document.getElementById('next'),
+        volumeButton: document.getElementById('volume-button'),
         volumeSlider: document.getElementById('volume-slider'),
         albumArt: document.getElementById('album-art'),
         songName: document.getElementById('song-title'),
@@ -35,9 +36,15 @@ function addEventListeners(elements) {
         setTimeout(() => updateSongInfo(elements), 500);
     });
 
+    elements.volumeButton.addEventListener('click', () => {
+        sendMessageToYoutubeTab({ command: 'toggleMute' });
+        toggleVolumeIcon(elements.volumeButton);
+    });
+
     elements.volumeSlider.addEventListener('input', (event) => {
         const volume = event.target.value;
         sendMessageToYoutubeTab({ command: 'setVolume', volume: volume });
+        updateVolumeIcon(elements.volumeButton, volume);
     });
 }
 
@@ -51,6 +58,32 @@ function togglePlayPauseIcon(button) {
     } else {
         playIcon.style.display = 'none';
         pauseIcon.style.display = 'inline-block';
+    }
+}
+
+function toggleVolumeIcon(button) {
+    const volumeIcon = button.querySelector('.volume-icon');
+    const muteIcon = button.querySelector('.mute-icon');
+    
+    if (volumeIcon.style.display === 'none') {
+        volumeIcon.style.display = 'inline-block';
+        muteIcon.style.display = 'none';
+    } else {
+        volumeIcon.style.display = 'none';
+        muteIcon.style.display = 'inline-block';
+    }
+}
+
+function updateVolumeIcon(button, volume) {
+    const volumeIcon = button.querySelector('.volume-icon');
+    const muteIcon = button.querySelector('.mute-icon');
+    
+    if (volume === '0') {
+        volumeIcon.style.display = 'none';
+        muteIcon.style.display = 'inline-block';
+    } else {
+        volumeIcon.style.display = 'inline-block';
+        muteIcon.style.display = 'none';
     }
 }
 
