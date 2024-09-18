@@ -47,29 +47,3 @@ function initialize() {
 
 // Evento DOMContentLoaded
 document.addEventListener('DOMContentLoaded', initialize);
-
-// // Função para atualizar a interface
-// function updateUI(songInfo) {
-//     const contentWrapper = document.getElementById('content-wrapper');
-//     const albumArt = document.getElementById('album-art');
-//     const songTitle = document.getElementById('song-title');
-//     const fullInfo = document.getElementById('full-info');
-
-//     if (songInfo && songInfo.albumArtUrl) {
-//         albumArt.src = songInfo.albumArtUrl;
-//         songTitle.textContent = songInfo.title || 'Unknown Title';
-//         fullInfo.textContent = songInfo.artist ? `${songInfo.artist} - ${songInfo.album || 'Unknown Album'}` : 'Unknown Artist';
-//         contentWrapper.classList.remove('hidden');
-//     } else {
-//         contentWrapper.classList.add('hidden');
-//     }
-// }
-
-// Chame esta função quando receber informações da música
-// Por exemplo:
-// updateUI({
-//     albumArtUrl: 'https://example.com/album-art.jpg',
-//     title: 'Song Title',
-//     artist: 'Artist Name',
-//     album: 'Album Name'
-// });
