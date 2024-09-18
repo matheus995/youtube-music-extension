@@ -20,14 +20,19 @@ function initializeDOMElements() {
 function addEventListeners(elements) {
     elements.playPauseButton.addEventListener('click', () => {
         sendMessageToYoutubeTab({ command: 'playPause' });
+        togglePlayPauseIcon(elements.playPauseButton);
     });
 
     elements.nextButton.addEventListener('click', () => {
         sendMessageToYoutubeTab({ command: 'next' });
+        // Atualiza as informações da música após um breve delay
+        setTimeout(() => updateSongInfo(elements), 500);
     });
 
     elements.previousButton.addEventListener('click', () => {
         sendMessageToYoutubeTab({ command: 'previous' });
+        // Atualiza as informações da música após um breve delay
+        setTimeout(() => updateSongInfo(elements), 500);
     });
 
     elements.volumeSlider.addEventListener('input', (event) => {
@@ -36,12 +41,24 @@ function addEventListeners(elements) {
     });
 }
 
+function togglePlayPauseIcon(button) {
+    const playIcon = button.querySelector('.play-icon');
+    const pauseIcon = button.querySelector('.pause-icon');
+    
+    if (playIcon.style.display === 'none') {
+        playIcon.style.display = 'inline-block';
+        pauseIcon.style.display = 'none';
+    } else {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'inline-block';
+    }
+}
+
 // Função principal de inicialização
 function initialize() {
     const elements = initializeDOMElements();
     addEventListeners(elements);
 
-    // updateAlbumArt(elements);
     updateSongInfo(elements);
 }
 
