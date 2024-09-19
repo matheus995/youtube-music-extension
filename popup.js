@@ -1,4 +1,3 @@
-// import { updateAlbumArt } from './albumFunctions.js';
 import { updateSongInfo } from './songFunctions.js';
 import { sendMessageToYoutubeTab } from './messageFunctions.js';
 
@@ -20,8 +19,19 @@ function initializeDOMElements() {
 // Função para adicionar event listeners
 function addEventListeners(elements) {
     elements.playPauseButton.addEventListener('click', () => {
-        sendMessageToYoutubeTab({ command: 'playPause' });
-        togglePlayPauseIcon(elements.playPauseButton);
+        // Alternar o ícone imediatamente
+        const isCurrentlyPlaying = elements.playPauseButton.querySelector('.pause-icon').style.display === 'inline-block';
+        updatePlayPauseIcon(elements.playPauseButton, !isCurrentlyPlaying);
+
+        sendMessageToYoutubeTab({ command: 'playPause' }, (response) => {
+            if (response.status === 'success') {
+                // Atualizar o estado do player após um breve delay
+                setTimeout(() => updatePlayerState(elements), 300);
+            } else {
+                // Se houver um erro, reverter o ícone
+                updatePlayPauseIcon(elements.playPauseButton, isCurrentlyPlaying);
+            }
+        });
     });
 
     elements.nextButton.addEventListener('click', () => {
@@ -37,54 +47,52 @@ function addEventListeners(elements) {
     });
 
     elements.volumeButton.addEventListener('click', () => {
-        sendMessageToYoutubeTab({ command: 'toggleMute' });
-        toggleVolumeIcon(elements.volumeButton);
+        // Alternar o ícone imediatamente
+        const isCurrentlyMuted = elements.volumeButton.querySelector('.mute-icon').style.display === 'inline-block';
+        updateVolumeIcon(elements.volumeButton, !isCurrentlyMuted);
+
+        sendMessageToYoutubeTab({ command: 'toggleMute' }, (response) => {
+            if (response.status === 'success') {
+                // Atualizar o estado do player após um breve delay
+                setTimeout(() => updatePlayerState(elements), 300);
+            } else {
+                // Se houver um erro, reverter o ícone
+                updateVolumeIcon(elements.volumeButton, isCurrentlyMuted);
+            }
+        });
     });
 
     elements.volumeSlider.addEventListener('input', (event) => {
         const volume = event.target.value;
         sendMessageToYoutubeTab({ command: 'setVolume', volume: volume });
-        updateVolumeIcon(elements.volumeButton, volume);
+        updateVolumeIcon(elements.volumeButton, volume !== '0');
     });
 }
 
-function togglePlayPauseIcon(button) {
+function updatePlayerState(elements) {
+    sendMessageToYoutubeTab({ command: 'getPlayerState' }, (response) => {
+        if (response.status === 'success') {
+            const { isPlaying, isMuted } = response.playerState;
+            updatePlayPauseIcon(elements.playPauseButton, isPlaying);
+            updateVolumeIcon(elements.volumeButton, !isMuted);
+        }
+    });
+}
+
+function updatePlayPauseIcon(button, isPlaying) {
     const playIcon = button.querySelector('.play-icon');
     const pauseIcon = button.querySelector('.pause-icon');
     
-    if (playIcon.style.display === 'none') {
-        playIcon.style.display = 'inline-block';
-        pauseIcon.style.display = 'none';
-    } else {
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'inline-block';
-    }
+    playIcon.style.display = isPlaying ? 'none' : 'inline-block';
+    pauseIcon.style.display = isPlaying ? 'inline-block' : 'none';
 }
 
-function toggleVolumeIcon(button) {
+function updateVolumeIcon(button, isNotMuted) {
     const volumeIcon = button.querySelector('.volume-icon');
     const muteIcon = button.querySelector('.mute-icon');
     
-    if (volumeIcon.style.display === 'none') {
-        volumeIcon.style.display = 'inline-block';
-        muteIcon.style.display = 'none';
-    } else {
-        volumeIcon.style.display = 'none';
-        muteIcon.style.display = 'inline-block';
-    }
-}
-
-function updateVolumeIcon(button, volume) {
-    const volumeIcon = button.querySelector('.volume-icon');
-    const muteIcon = button.querySelector('.mute-icon');
-    
-    if (volume === '0') {
-        volumeIcon.style.display = 'none';
-        muteIcon.style.display = 'inline-block';
-    } else {
-        volumeIcon.style.display = 'inline-block';
-        muteIcon.style.display = 'none';
-    }
+    volumeIcon.style.display = isNotMuted ? 'inline-block' : 'none';
+    muteIcon.style.display = isNotMuted ? 'none' : 'inline-block';
 }
 
 // Função principal de inicialização
@@ -93,6 +101,7 @@ function initialize() {
     addEventListeners(elements);
 
     updateSongInfo(elements);
+    updatePlayerState(elements);
 }
 
 // Evento DOMContentLoaded

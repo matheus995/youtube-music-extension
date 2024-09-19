@@ -44,6 +44,16 @@ function executeCommand(command, volume = null) {
     }
 }
 
+// Função para verificar o estado atual do botão play/pause
+function getPlayerState() {
+    const playPauseButton = getElementByXPath('//*[@class="play-pause-button style-scope ytmusic-player-bar"]');
+    const isPlaying = playPauseButton && playPauseButton.getAttribute('title') === 'Pausar';
+    const volumeButton = getElementByXPath('//*[@class="volume style-scope ytmusic-player-bar"]');
+    const isMuted = volumeButton && volumeButton.getAttribute('aria-pressed') === 'true';
+
+    return { isPlaying, isMuted };
+}
+
 // Recebe mensagens do popup e executa comandos
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('Message received:', message);
@@ -62,6 +72,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             break;
         case 'getSongInfo':
             sendResponse({ status: 'success', songInfo: getSongInfo() });
+            break;
+        case 'getPlayerState':
+            sendResponse({ status: 'success', playerState: getPlayerState() });
             break;
         default:
             executeCommand(message.command, message.volume);
