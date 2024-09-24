@@ -64,6 +64,7 @@ function addEventListeners(elements) {
 
     elements.volumeSlider.addEventListener('input', (event) => {
         const volume = event.target.value;
+        updateVolumeSliderBackground(elements.volumeSlider, volume);
         sendMessageToYoutubeTab({ command: 'setVolume', volume: parseInt(volume) }, (response) => {
             if (response.status === 'success') {
                 updateVolumeIcon(elements.volumeButton, volume !== '0');
@@ -72,6 +73,11 @@ function addEventListeners(elements) {
             }
         });
     });
+}
+
+function updateVolumeSliderBackground(volumeSlider, volume) {
+    const percentage = volume + '%';
+    volumeSlider.style.background = `linear-gradient(to right, #ff0000 0%, #ff0000 ${percentage}, #4d4d4d ${percentage}, #4d4d4d 100%)`;
 }
 
 function updatePlayerState(elements) {
@@ -85,6 +91,7 @@ function updatePlayerState(elements) {
             sendMessageToYoutubeTab({ command: 'getVolume' }, (volumeResponse) => {
                 if (volumeResponse.status === 'success') {
                     elements.volumeSlider.value = volumeResponse.volume;
+                    updateVolumeSliderBackground(elements.volumeSlider, volumeResponse.volume);
                 }
             });
         }

@@ -103,8 +103,9 @@ body {
     width: 80px; /* Reduzido o tamanho da barra de volume */
     height: 3px;
     border-radius: 5px;
-    background: #4d4d4d;
+    background: linear-gradient(to right, #ff0000 0%, #ff0000 50%, #4d4d4d 50%, #4d4d4d 100%);
     outline: none;
+    transition: background 0.3s ease;
 }
 
 #volume-slider::-webkit-slider-thumb {
