@@ -64,8 +64,13 @@ function addEventListeners(elements) {
 
     elements.volumeSlider.addEventListener('input', (event) => {
         const volume = event.target.value;
-        sendMessageToYoutubeTab({ command: 'setVolume', volume: volume });
-        updateVolumeIcon(elements.volumeButton, volume !== '0');
+        sendMessageToYoutubeTab({ command: 'setVolume', volume: parseInt(volume) }, (response) => {
+            if (response.status === 'success') {
+                updateVolumeIcon(elements.volumeButton, volume !== '0');
+            } else {
+                console.error('Failed to set volume');
+            }
+        });
     });
 }
 
@@ -75,6 +80,13 @@ function updatePlayerState(elements) {
             const { isPlaying, isMuted } = response.playerState;
             updatePlayPauseIcon(elements.playPauseButton, isPlaying);
             updateVolumeIcon(elements.volumeButton, !isMuted);
+            
+            // Obter o volume atual
+            sendMessageToYoutubeTab({ command: 'getVolume' }, (volumeResponse) => {
+                if (volumeResponse.status === 'success') {
+                    elements.volumeSlider.value = volumeResponse.volume;
+                }
+            });
         }
     });
 }

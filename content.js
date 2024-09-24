@@ -54,6 +54,49 @@ function getPlayerState() {
     return { isPlaying, isMuted };
 }
 
+// Função para simular um clique na barra de volume
+function setVolume(volume) {
+    const volumeSlider = document.querySelector('#volume-slider #sliderBar');
+    if (volumeSlider) {
+        // Calcula a posição x do clique baseado no volume desejado
+        const rect = volumeSlider.getBoundingClientRect();
+        const x = rect.left + (rect.width * (volume / 100));
+        const y = rect.top + (rect.height / 2);
+
+        // Simula os eventos de mouse
+        const mouseDownEvent = new MouseEvent('mousedown', {
+            bubbles: true,
+            cancelable: true,
+            clientX: x,
+            clientY: y
+        });
+
+        const mouseUpEvent = new MouseEvent('mouseup', {
+            bubbles: true,
+            cancelable: true,
+            clientX: x,
+            clientY: y
+        });
+
+        // Dispara os eventos
+        volumeSlider.dispatchEvent(mouseDownEvent);
+        volumeSlider.dispatchEvent(mouseUpEvent);
+
+        return true;
+    }
+    return false;
+}
+
+// Função para obter o volume atual
+function getVolume() {
+    const volumeSlider = document.querySelector('tp-yt-paper-slider#volume-slider');
+    if (volumeSlider) {
+        const volume = volumeSlider.getAttribute('value');
+        return volume ? parseInt(volume) : 50;
+    }
+    return 50; // Valor padrão se não encontrar o slider
+}
+
 // Recebe mensagens do popup e executa comandos
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('Message received:', message);
@@ -75,6 +118,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             break;
         case 'getPlayerState':
             sendResponse({ status: 'success', playerState: getPlayerState() });
+            break;
+        case 'setVolume':
+            const success = setVolume(message.volume);
+            sendResponse({ status: success ? 'success' : 'error' });
+            break;
+        case 'getVolume':
+            sendResponse({ status: 'success', volume: getVolume() });
             break;
         default:
             executeCommand(message.command, message.volume);
