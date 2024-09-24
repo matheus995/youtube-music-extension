@@ -12,7 +12,10 @@ function initializeDOMElements() {
         volumeSlider: document.getElementById('volume-slider'),
         albumArt: document.getElementById('album-art'),
         songName: document.getElementById('song-title'),
-        songInfo: document.getElementById('full-info')
+        songInfo: document.getElementById('full-info'),
+        expandQueueButton: document.getElementById('expand-queue'),
+        collapseQueueButton: document.getElementById('collapse-queue'),
+        queueList: document.getElementById('queue-list')
     };
 }
 
@@ -73,6 +76,31 @@ function addEventListeners(elements) {
             }
         });
     });
+
+    elements.expandQueueButton.addEventListener('click', () => {
+        console.log('Expand queue button clicked'); // Log para depuração
+        sendMessageToYoutubeTab({ command: 'getQueue' }, (response) => {
+            console.log('Response from getQueue:', response); // Log para depuração
+            if (response.status === 'success') {
+                displayQueue(response.queue, elements.queueList);
+                elements.expandQueueButton.classList.add('hidden');
+                elements.collapseQueueButton.classList.remove('hidden');
+                elements.queueList.style.display = 'block'; // Mostrar a lista de músicas
+                adjustPopupHeight(true); // Ajustar a altura do popup para expandir
+                localStorage.setItem('queueExpanded', 'true'); // Salvar estado de expansão
+            } else {
+                console.error('Failed to get queue:', response.message);
+            }
+        });
+    });
+
+    elements.collapseQueueButton.addEventListener('click', () => {
+        elements.queueList.style.display = 'none';
+        elements.expandQueueButton.classList.remove('hidden');
+        elements.collapseQueueButton.classList.add('hidden');
+        adjustPopupHeight(false); // Ajustar a altura do popup para recolher
+        localStorage.setItem('queueExpanded', 'false'); // Salvar estado de recolhimento
+    });
 }
 
 function updateVolumeSliderBackground(volumeSlider, volume) {
@@ -114,6 +142,34 @@ function updateVolumeIcon(button, isNotMuted) {
     muteIcon.style.display = isNotMuted ? 'none' : 'inline-block';
 }
 
+function displayQueue(queue, queueList) {
+    queueList.innerHTML = '';
+    queue.forEach((item, index) => {
+        const queueItem = document.createElement('div');
+        queueItem.className = 'queue-item';
+        queueItem.innerHTML = `
+            <img src="${item.albumArt}" alt="Album Art">
+            <div class="info">
+                <div class="title">${item.title}</div>
+                <div class="artist">${item.artist}</div>
+            </div>
+        `;
+        queueItem.addEventListener('click', () => {
+            sendMessageToYoutubeTab({ command: 'selectQueueItem', index: index });
+        });
+        queueList.appendChild(queueItem);
+    });
+}
+
+function adjustPopupHeight(expand) {
+    const popup = document.documentElement;
+    if (expand) {
+        popup.style.height = '364px'; // Altura expandida
+    } else {
+        popup.style.height = '122px'; // Altura original
+    }
+}
+
 // Função principal de inicialização
 function initialize() {
     const elements = initializeDOMElements();
@@ -121,6 +177,28 @@ function initialize() {
 
     updateSongInfo(elements);
     updatePlayerState(elements);
+
+    // Verificar estado de expansão/recolhimento salvo
+    const queueExpanded = localStorage.getItem('queueExpanded') === 'true';
+    if (queueExpanded) {
+        elements.expandQueueButton.classList.add('hidden');
+        elements.collapseQueueButton.classList.remove('hidden');
+        elements.queueList.style.display = 'block';
+        adjustPopupHeight(true);
+        // Carregar a fila de músicas ao inicializar se expandido
+        sendMessageToYoutubeTab({ command: 'getQueue' }, (response) => {
+            if (response.status === 'success') {
+                displayQueue(response.queue, elements.queueList);
+            } else {
+                console.error('Failed to get queue:', response.message);
+            }
+        });
+    } else {
+        elements.expandQueueButton.classList.remove('hidden');
+        elements.collapseQueueButton.classList.add('hidden');
+        elements.queueList.style.display = 'none';
+        adjustPopupHeight(false);
+    }
 }
 
 // Evento DOMContentLoaded

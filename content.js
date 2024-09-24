@@ -98,7 +98,44 @@ function getVolume() {
     return 50; // Valor padrão se não encontrar o slider
 }
 
-// Recebe mensagens do popup e executa comandos
+// Função para obter a fila de músicas
+function getQueue() {
+    const queueItems = document.querySelectorAll('div#contents.style-scope.ytmusic-player-queue ytmusic-player-queue-item');
+    console.log('Queue items found:', queueItems.length); // Log para depuração
+
+    const queue = Array.from(queueItems).map(item => {
+        const albumArtElement = item.querySelector('.left-items.style-scope.ytmusic-player-queue-item img#img');
+        const titleElement = item.querySelector('.song-info.style-scope.ytmusic-player-queue-item .song-title.style-scope.ytmusic-player-queue-item');
+        const artistElement = item.querySelector('.song-info.style-scope.ytmusic-player-queue-item .byline.style-scope.ytmusic-player-queue-item');
+
+        console.log('Album Art Element:', albumArtElement ? albumArtElement.src : 'Not found'); // Log para depuração
+        console.log('Title Element:', titleElement ? titleElement.textContent : 'Not found'); // Log para depuração
+        console.log('Artist Element:', artistElement ? artistElement.textContent : 'Not found'); // Log para depuração
+
+        if (albumArtElement && titleElement && artistElement) {
+            const albumArt = albumArtElement.src;
+            if (!albumArt.startsWith('data:image')) { // Ignorar imagens que começam com "data:image"
+                const title = titleElement.textContent;
+                const artist = artistElement.textContent;
+                return { albumArt, title, artist };
+            }
+        }
+        return null;
+    }).filter(item => item !== null);
+
+    console.log('Queue:', queue); // Log para depuração
+    return queue;
+}
+
+// Função para selecionar um item da fila
+function selectQueueItem(index) {
+    const queueItems = document.querySelectorAll('div#contents.style-scope.ytmusic-player-queue ytmusic-player-queue-item');
+    if (queueItems[index]) {
+        queueItems[index].click();
+    }
+}
+
+// Listener de mensagens
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('Message received:', message);
 
@@ -126,6 +163,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             break;
         case 'getVolume':
             sendResponse({ status: 'success', volume: getVolume() });
+            break;
+        case 'getQueue':
+            const queue = getQueue();
+            if (queue.length > 0) {
+                sendResponse({ status: 'success', queue: queue });
+            } else {
+                sendResponse({ status: 'error', message: 'No queue items found' });
+            }
+            break;
+        case 'selectQueueItem':
+            selectQueueItem(message.index);
+            sendResponse({ status: 'success' });
             break;
         default:
             executeCommand(message.command, message.volume);

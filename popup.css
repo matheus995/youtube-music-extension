@@ -11,6 +11,7 @@ body {
 
 .container {
     padding: 10px;
+    padding-bottom: 0; /* Remover padding inferior */
 }
 
 #content-wrapper {
@@ -114,7 +115,7 @@ body {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #ff0000; /* Alterado de #1db954 para vermelho */
+    background: #ff0000;
     cursor: pointer;
 }
 
@@ -122,7 +123,7 @@ body {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #ff0000; /* Alterado de #1db954 para vermelho */
+    background: #ff0000;
     cursor: pointer;
 }
 
@@ -134,4 +135,54 @@ body {
 #full-info {
     max-height: 2.4em; /* 2 linhas de texto */
     overflow: hidden;
+}
+
+#queue-list {
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #1a1a1a;
+    padding: 10px;
+    border-top: 1px solid #333;
+}
+
+.queue-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.queue-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.queue-item .info {
+    display: flex;
+    flex-direction: column;
+}
+
+.queue-item .title {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.queue-item .artist {
+    font-size: 12px;
+    color: #b3b3b3;
+}
+
+.queue-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px; /* Reduzir a margem superior */
+    margin-bottom: 5px; /* Adicionar margem inferior */
+}
+
+.hidden {
+    display: none;
 }
