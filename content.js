@@ -60,7 +60,8 @@ function setVolume(volume) {
     if (volumeSlider) {
         // Calcula a posição x do clique baseado no volume desejado
         const rect = volumeSlider.getBoundingClientRect();
-        const x = rect.left + (rect.width * (volume / 100));
+        const adjustedVolume = volume === 0 ? 0 : (volume / 100) * (rect.width - 1) + 1; // Ajusta para que 1 no popup corresponda a 1 no YouTube
+        const x = rect.left + adjustedVolume;
         const y = rect.top + (rect.height / 2);
 
         // Simula os eventos de mouse
