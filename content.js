@@ -108,16 +108,13 @@ function getQueue() {
         const titleElement = item.querySelector('.song-info.style-scope.ytmusic-player-queue-item .song-title.style-scope.ytmusic-player-queue-item');
         const artistElement = item.querySelector('.song-info.style-scope.ytmusic-player-queue-item .byline.style-scope.ytmusic-player-queue-item');
 
-        console.log('Album Art Element:', albumArtElement ? albumArtElement.src : 'Not found'); // Log para depuração
-        console.log('Title Element:', titleElement ? titleElement.textContent : 'Not found'); // Log para depuração
-        console.log('Artist Element:', artistElement ? artistElement.textContent : 'Not found'); // Log para depuração
-
         if (albumArtElement && titleElement && artistElement) {
             const albumArt = albumArtElement.src;
             if (!albumArt.startsWith('data:image')) { // Ignorar imagens que começam com "data:image"
-                const title = titleElement.textContent;
-                const artist = artistElement.textContent;
-                return { albumArt, title, artist };
+                const title = titleElement.textContent.trim();
+                const artist = artistElement.textContent.trim();
+                const playButtonElement = item.querySelector('.icon.style-scope.ytmusic-play-button-renderer');
+                return { albumArt, title, artist, element: item, playButtonElement };
             }
         }
         return null;
@@ -129,9 +126,20 @@ function getQueue() {
 
 // Função para selecionar um item da fila
 function selectQueueItem(index) {
-    const queueItems = document.querySelectorAll('div#contents.style-scope.ytmusic-player-queue ytmusic-player-queue-item');
-    if (queueItems[index]) {
-        queueItems[index].click();
+    const queue = getQueue();
+    console.log('Updated queue:', queue); // Log para depuração
+
+    if (queue.length > index) {
+        const selectedItem = queue[index];
+        console.log(`Clicking queue item: ${selectedItem.title} - ${selectedItem.artist}`); // Log para depuração
+        
+        if (selectedItem.playButtonElement) {
+            selectedItem.playButtonElement.click();
+        } else {
+            console.error('Play button element not found for queue item');
+        }
+    } else {
+        console.error('Invalid queue index');
     }
 }
 
