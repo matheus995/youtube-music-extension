@@ -82,7 +82,7 @@ function addEventListeners(elements) {
         sendMessageToYoutubeTab({ command: 'getQueue' }, (response) => {
             console.log('Response from getQueue:', response); // Log para depuração
             if (response.status === 'success') {
-                displayQueue(response.queue, elements.queueList);
+                displayQueue(response.queue, elements.queueList, elements);
                 elements.expandQueueButton.classList.add('hidden');
                 elements.collapseQueueButton.classList.remove('hidden');
                 elements.queueList.style.display = 'block'; // Mostrar a lista de músicas
@@ -142,7 +142,7 @@ function updateVolumeIcon(button, isNotMuted) {
     muteIcon.style.display = isNotMuted ? 'none' : 'inline-block';
 }
 
-function displayQueue(queue, queueList) {
+function displayQueue(queue, queueList, elements) {
     queueList.innerHTML = '';
     queue.forEach((item, index) => {
         const queueItem = document.createElement('div');
@@ -155,7 +155,23 @@ function displayQueue(queue, queueList) {
             </div>
         `;
         queueItem.addEventListener('click', () => {
-            sendMessageToYoutubeTab({ command: 'selectQueueItem', index: index });
+            sendMessageToYoutubeTab({ command: 'selectQueueItem', index: index }, (response) => {
+                if (response.status === 'success') {
+                    // Atualiza as informações da música e recarrega a lista
+                    setTimeout(() => {
+                        updateSongInfo(elements);
+                        updatePlayerState(elements);
+                        // Recarrega a lista de reprodução
+                        sendMessageToYoutubeTab({ command: 'getQueue' }, (queueResponse) => {
+                            if (queueResponse.status === 'success') {
+                                displayQueue(queueResponse.queue, elements.queueList, elements);
+                            } else {
+                                console.error('Failed to get updated queue:', queueResponse.message);
+                            }
+                        });
+                    }, 500);
+                }
+            });
         });
         queueList.appendChild(queueItem);
     });
@@ -177,6 +193,41 @@ function initialize() {
 
     updateSongInfo(elements);
     updatePlayerState(elements);
+
+    function displayQueue(queue, queueList) {
+        queueList.innerHTML = '';
+        queue.forEach((item, index) => {
+            const queueItem = document.createElement('div');
+            queueItem.className = 'queue-item';
+            queueItem.innerHTML = `
+                <img src="${item.albumArt}" alt="Album Art">
+                <div class="info">
+                    <div class="title">${item.title}</div>
+                    <div class="artist">${item.artist}</div>
+                </div>
+            `;
+            queueItem.addEventListener('click', () => {
+                sendMessageToYoutubeTab({ command: 'selectQueueItem', index: index }, (response) => {
+                    if (response.status === 'success') {
+                        // Atualiza as informações da música e recarrega a lista
+                        setTimeout(() => {
+                            updateSongInfo(elements);
+                            updatePlayerState(elements);
+                            // Recarrega a lista de reprodução
+                            sendMessageToYoutubeTab({ command: 'getQueue' }, (queueResponse) => {
+                                if (queueResponse.status === 'success') {
+                                    displayQueue(queueResponse.queue, elements.queueList);
+                                } else {
+                                    console.error('Failed to get updated queue:', queueResponse.message);
+                                }
+                            });
+                        }, 500);
+                    }
+                });
+            });
+            queueList.appendChild(queueItem);
+        });
+    }
 
     // Verificar estado de expansão/recolhimento salvo
     const queueExpanded = localStorage.getItem('queueExpanded') === 'true';
